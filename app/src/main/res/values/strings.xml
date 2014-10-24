@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">AudioSample</string>
+    <string name="hint">Input speech text</string>
     <string name="speech">Speech</string>
     <string name="check">With Audio Focus</string>
     <string name="use_speakerphone">Use Speakerphone</string>
