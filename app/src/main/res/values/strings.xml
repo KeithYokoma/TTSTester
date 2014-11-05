@@ -6,4 +6,7 @@
     <string name="check">With Audio Focus</string>
     <string name="use_speakerphone">Use Speakerphone</string>
     <string name="use_bluetooth_device">Use Bluetooth Device</string>
+    <string name="stream_volume">Volume: </string>
+    <string name="stream_name">Stream: </string>
+    <string name="mode">Mode: </string>
 </resources>

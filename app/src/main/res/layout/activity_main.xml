@@ -15,14 +15,40 @@
         android:layout_height="wrap_content"
         android:singleLine="true"
         android:hint="@string/hint"/>
-    <Spinner
-        android:id="@+id/streams"
+    <TableLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-    <Spinner
-        android:id="@+id/modes"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:shrinkColumns="0"
+        android:stretchColumns="1">
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/stream_name"/>
+            <Spinner
+                android:id="@+id/streams"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        </TableRow>
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/mode"/>
+            <Spinner
+                android:id="@+id/modes"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        </TableRow>
+    </TableLayout>
     <CheckBox
         android:id="@+id/use_speakerphone"
         android:layout_width="match_parent"
@@ -40,13 +66,23 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/check"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/stream_volume"/>
+        <SeekBar
+            android:id="@+id/volume_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
     <Button
         android:id="@+id/button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/speech"/>
-    <SeekBar
-        android:id="@+id/volume_bar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
 </LinearLayout>
