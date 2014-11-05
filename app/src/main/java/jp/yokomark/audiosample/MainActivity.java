@@ -1,12 +1,13 @@
 package jp.yokomark.audiosample;
 
-import android.app.Activity;
 import android.content.Context;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
+import android.support.v7.app.ActionBarActivity;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 
@@ -20,17 +21,17 @@ import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 import butterknife.OnItemSelected;
 
-public class MainActivity extends Activity implements AudioManager.OnAudioFocusChangeListener {
+public class MainActivity extends ActionBarActivity implements AudioManager.OnAudioFocusChangeListener {
 	private static final HashMap<String, String> MAP = new HashMap<String, String>();
 	private static final List<Stream> STREAMS = new ArrayList<Stream>();
 	private static final List<Mode> MODES = new ArrayList<Mode>();
 	@InjectView(R.id.streams) Spinner streamSpinner;
 	@InjectView(R.id.modes) Spinner modeSpinner;
 	@InjectView(R.id.text) EditText input;
+	@InjectView(R.id.volume_bar) SeekBar volumeBar;
 	private TextToSpeech tts;
 	private AudioManager am;
 	private boolean ready;
-	private int stream;
 
 	static {
 		STREAMS.add(new Stream(AudioManager.STREAM_VOICE_CALL, "STREAM_VOICE_CALL"));
@@ -65,6 +66,23 @@ public class MainActivity extends Activity implements AudioManager.OnAudioFocusC
 
 		streamSpinner.setAdapter(prepareStreamAdapter());
 		modeSpinner.setAdapter(prepareModeAdapter());
+
+		Stream str = (Stream) streamSpinner.getSelectedItem();
+		volumeBar.setMax(am.getStreamMaxVolume(str.value));
+		volumeBar.setProgress(am.getStreamVolume(str.value));
+		volumeBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+			@Override
+			public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+				Stream str = (Stream) streamSpinner.getSelectedItem();
+				am.setStreamVolume(str.value, progress, AudioManager.FLAG_PLAY_SOUND);
+			}
+
+			@Override
+			public void onStartTrackingTouch(SeekBar seekBar) {}
+
+			@Override
+			public void onStopTrackingTouch(SeekBar seekBar) {}
+		});
 	}
 
 	@Override
@@ -88,8 +106,9 @@ public class MainActivity extends Activity implements AudioManager.OnAudioFocusC
 
 	@OnCheckedChanged(R.id.check)
 	public void onAudioFocusSettingChange(boolean isChecked) {
+		Stream str = (Stream) streamSpinner.getSelectedItem();
 		if (isChecked) {
-			am.requestAudioFocus(MainActivity.this, stream, AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK);
+			am.requestAudioFocus(MainActivity.this, str.value, AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK);
 		} else {
 			am.abandonAudioFocus(MainActivity.this);
 		}
@@ -108,7 +127,8 @@ public class MainActivity extends Activity implements AudioManager.OnAudioFocusC
 	@OnItemSelected(R.id.streams)
 	public void onStreamSelected(int pos) {
 		Stream str = STREAMS.get(pos);
-		stream = str.value;
+		volumeBar.setMax(am.getStreamMaxVolume(str.value));
+		volumeBar.setProgress(am.getStreamVolume(str.value));
 		MAP.put(TextToSpeech.Engine.KEY_PARAM_STREAM, String.valueOf(str.value));
 	}
 

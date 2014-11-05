@@ -45,4 +45,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/speech"/>
+    <SeekBar
+        android:id="@+id/volume_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 </LinearLayout>
