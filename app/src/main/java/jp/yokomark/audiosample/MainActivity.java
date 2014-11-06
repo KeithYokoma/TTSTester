@@ -23,7 +23,7 @@ import butterknife.OnItemSelected;
 
 public class MainActivity extends ActionBarActivity implements AudioManager.OnAudioFocusChangeListener {
 	private static final HashMap<String, String> MAP = new HashMap<String, String>();
-	private static final List<Stream> STREAMS = new ArrayList<Stream>();
+
 	private static final List<Mode> MODES = new ArrayList<Mode>();
 	@InjectView(R.id.streams) Spinner streamSpinner;
 	@InjectView(R.id.modes) Spinner modeSpinner;
@@ -34,14 +34,6 @@ public class MainActivity extends ActionBarActivity implements AudioManager.OnAu
 	private boolean ready;
 
 	static {
-		STREAMS.add(new Stream(AudioManager.STREAM_VOICE_CALL, "STREAM_VOICE_CALL"));
-		STREAMS.add(new Stream(AudioManager.STREAM_SYSTEM, "STREAM_SYSTEM"));
-		STREAMS.add(new Stream(AudioManager.STREAM_RING, "STREAM_RING"));
-		STREAMS.add(new Stream(AudioManager.STREAM_MUSIC, "STREAM_MUSIC"));
-		STREAMS.add(new Stream(AudioManager.STREAM_ALARM, "STREAM_ALARM"));
-		STREAMS.add(new Stream(AudioManager.STREAM_NOTIFICATION, "STREAM_NOTIFICATION"));
-		STREAMS.add(new Stream(AudioManager.STREAM_DTMF, "STREAM_DTMF"));
-
 		MODES.add(new Mode(AudioManager.MODE_CURRENT, "MODE_CURRENT"));
 		MODES.add(new Mode(AudioManager.MODE_INVALID, "MODE_INVALID"));
 		MODES.add(new Mode(AudioManager.MODE_IN_CALL, "MODE_IN_CALL"));
@@ -67,13 +59,13 @@ public class MainActivity extends ActionBarActivity implements AudioManager.OnAu
 		streamSpinner.setAdapter(prepareStreamAdapter());
 		modeSpinner.setAdapter(prepareModeAdapter());
 
-		Stream str = (Stream) streamSpinner.getSelectedItem();
+		AudioStreams.Entry str = (AudioStreams.Entry) streamSpinner.getSelectedItem();
 		volumeBar.setMax(am.getStreamMaxVolume(str.value));
 		volumeBar.setProgress(am.getStreamVolume(str.value));
 		volumeBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
 			@Override
 			public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-				Stream str = (Stream) streamSpinner.getSelectedItem();
+				AudioStreams.Entry str = (AudioStreams.Entry) streamSpinner.getSelectedItem();
 				am.setStreamVolume(str.value, progress, AudioManager.FLAG_PLAY_SOUND);
 			}
 
@@ -104,9 +96,14 @@ public class MainActivity extends ActionBarActivity implements AudioManager.OnAu
 		tts.speak(input.getText().toString(), TextToSpeech.QUEUE_ADD, MAP);
 	}
 
+	@OnClick(R.id.show_media_routes)
+	public void onShowMediaRoutes() {
+		MediaRouteListFragment.show(this);
+	}
+
 	@OnCheckedChanged(R.id.check)
 	public void onAudioFocusSettingChange(boolean isChecked) {
-		Stream str = (Stream) streamSpinner.getSelectedItem();
+		AudioStreams.Entry str = (AudioStreams.Entry) streamSpinner.getSelectedItem();
 		if (isChecked) {
 			am.requestAudioFocus(MainActivity.this, str.value, AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK);
 		} else {
@@ -126,7 +123,7 @@ public class MainActivity extends ActionBarActivity implements AudioManager.OnAu
 
 	@OnItemSelected(R.id.streams)
 	public void onStreamSelected(int pos) {
-		Stream str = STREAMS.get(pos);
+		AudioStreams.Entry str = AudioStreams.getStreams().get(pos);
 		volumeBar.setMax(am.getStreamMaxVolume(str.value));
 		volumeBar.setProgress(am.getStreamVolume(str.value));
 		MAP.put(TextToSpeech.Engine.KEY_PARAM_STREAM, String.valueOf(str.value));
@@ -139,26 +136,12 @@ public class MainActivity extends ActionBarActivity implements AudioManager.OnAu
 	}
 
 	/* package */ SpinnerAdapter prepareStreamAdapter() {
-		return new ArrayAdapter<Stream>(this, android.R.layout.simple_list_item_1, android.R.id.text1, STREAMS);
+		return new ArrayAdapter<AudioStreams.Entry>(
+				this, android.R.layout.simple_list_item_1, android.R.id.text1, AudioStreams.getStreams());
 	}
 
 	/* package */ SpinnerAdapter prepareModeAdapter() {
 		return new ArrayAdapter<Mode>(this, android.R.layout.simple_list_item_1, android.R.id.text1, MODES);
-	}
-
-	/* package */ static class Stream {
-		final int value;
-		final String label;
-
-		public Stream(int value, String label) {
-			this.value = value;
-			this.label = label;
-		}
-
-		@Override
-		public String toString() {
-			return label;
-		}
 	}
 
 	/* package */ static class Mode {

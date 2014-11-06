@@ -9,4 +9,6 @@
     <string name="stream_volume">Volume: </string>
     <string name="stream_name">Stream: </string>
     <string name="mode">Mode: </string>
+    <string name="show_media_routes">Show Media Routes</string>
+    <string name="title_media_routes">Media Routes</string>
 </resources>

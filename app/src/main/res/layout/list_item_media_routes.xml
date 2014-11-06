@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="?android:listPreferredItemHeight"
+    android:paddingEnd="?android:listPreferredItemPaddingEnd"
+    android:paddingRight="?android:listPreferredItemPaddingRight"
+    android:paddingStart="?android:listPreferredItemPaddingStart"
+    android:paddingLeft="?android:listPreferredItemPaddingLeft"
+    android:paddingTop="?android:listPreferredItemPaddingLeft"
+    android:paddingBottom="?android:listPreferredItemPaddingRight">
+    <TextView
+        android:id="@+id/route_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.AppCompat.Title"
+        tools:text="Media Route Name"/>
+    <TextView
+        android:id="@+id/route_stream"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/route_name"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        tools:text="Stream name here"/>
+    <TextView
+        android:id="@+id/route_desc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/route_stream"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+        tools:text="Description here"/>
+    <TextView
+        android:id="@+id/route_id"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/route_desc"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+        tools:text="Route ID here"/>
+</RelativeLayout>
