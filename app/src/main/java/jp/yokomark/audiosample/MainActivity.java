@@ -1,15 +1,19 @@
 package jp.yokomark.audiosample;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
+import android.speech.tts.UtteranceProgressListener;
 import android.support.v7.app.ActionBarActivity;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,6 +29,34 @@ public class MainActivity extends ActionBarActivity implements AudioManager.OnAu
 	private static final HashMap<String, String> MAP = new HashMap<String, String>();
 
 	private static final List<Mode> MODES = new ArrayList<Mode>();
+	@SuppressLint("NewApi")
+	private final UtteranceProgressListener progressListener = new UtteranceProgressListener() {
+		@Override
+		public void onStart(String utteranceId) {
+			runOnUiThread(new Runnable() {
+				@Override
+				public void run() {
+					speechButton.setEnabled(false);
+				}
+			});
+		}
+
+		@Override
+		public void onDone(String utteranceId) {
+			runOnUiThread(new Runnable() {
+				@Override
+				public void run() {
+					speechButton.setEnabled(true);
+				}
+			});
+		}
+
+		@Override
+		public void onError(String utteranceId) {
+			Toast.makeText(getApplicationContext(), R.string.error_utterance_progress, Toast.LENGTH_SHORT).show();
+		}
+	};
+	@InjectView(R.id.button) Button speechButton;
 	@InjectView(R.id.streams) Spinner streamSpinner;
 	@InjectView(R.id.modes) Spinner modeSpinner;
 	@InjectView(R.id.text) EditText input;
@@ -49,12 +81,15 @@ public class MainActivity extends ActionBarActivity implements AudioManager.OnAu
 		ButterKnife.inject(this);
 
 		tts = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
+			@SuppressLint("NewApi")
 			@Override
 			public void onInit(int status) {
 				ready = TextToSpeech.SUCCESS == status;
+				tts.setOnUtteranceProgressListener(progressListener);
 			}
 		});
 		am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+		MAP.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "test");
 
 		streamSpinner.setAdapter(prepareStreamAdapter());
 		modeSpinner.setAdapter(prepareModeAdapter());

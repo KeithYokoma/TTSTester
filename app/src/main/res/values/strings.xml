@@ -11,4 +11,5 @@
     <string name="mode">Mode: </string>
     <string name="show_media_routes">Show Media Routes</string>
     <string name="title_media_routes">Media Routes</string>
+    <string name="error_utterance_progress">Something went wrong while speeching.</string>
 </resources>
